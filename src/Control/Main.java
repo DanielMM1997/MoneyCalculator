@@ -1,13 +1,20 @@
 package Control;
 
-import View.MoneyCalculatorView;
+import Model.CurrencyList;
+import Persistance.CurrencyListLoader;
+import Persistance.ExchangeRateLoaderFromWeb;
+import Persistance.FileCurrencyListLoader;
+import View.MainFrame;
+
 
 public class Main {
 
     public static void main(String [] args) {
-         MoneyCalculatorView mainFrame = new MoneyCalculatorView("Money Calculator");
-        Controller controller = new Controller(mainFrame);
-        controller.initialize();
+        MainFrame mainFrame = new MainFrame();
+        CurrencyListLoader currencyLoader = new FileCurrencyListLoader("currencies.txt");
+        CurrencyList currencies = currencyLoader.currencies();
+        ExchangeRateLoaderFromWeb exchangeRate = new ExchangeRateLoaderFromWeb();
+        Controller controller = new Controller(mainFrame, currencies, exchangeRate);
     }
 }
 

@@ -1,46 +1,44 @@
 package Control;
 
-import Model.*;
-import View.*;
-import javax.swing.*;
+import Model.Currency;
+import Model.CurrencyList;
+import Persistance.ExchangeRateLoaderFromWeb;
+import View.MainFrame;
 import java.awt.event.*;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Controller {
-    private MoneyCalculatorView frame;
-    private RESTExchangeRateLoader loader;
+    private MainFrame frame;
+    private CurrencyList currencies;
+    private ExchangeRateLoaderFromWeb exchange;
 
-    public Controller(MoneyCalculatorView MoneyCalculatorView) {
+    public Controller(MainFrame MoneyCalculatorView, CurrencyList currencies,
+                                        ExchangeRateLoaderFromWeb exchangeRate) {
         this.frame = MoneyCalculatorView;
+        this.currencies = currencies;
+        this.exchange = exchangeRate;
+        frame.addRateListener(new RateListener());
+        frame.addCurrencyList(currencies);
+        frame.setVisible(true);
     }
 
-
-    public void initialize() {
-        loader = new RESTExchangeRateLoader();
-        frame.setCurrencySet(new CurrencyList().getList());
-        frame.initialize();
-        JButton buttonCalculate = (JButton)frame.getMyComponents().get("CalculateButton");
-        JButton buttonClear = (JButton)frame.getMyComponents().get("ClearButton");
-        JComboBox toCurrency = (JComboBox)frame.getMyComponents().get("SelectorTo");
-        JTextField amountField = (JTextField)frame.getMyComponents().get("Amount");
-        JTextField resultArea = (JTextField)frame.getMyComponents().get("Result");
-
-        buttonCalculate.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                ExchangeRate er = loader.load((Currency)toCurrency.getSelectedItem());
-                Double amount = Double.parseDouble(amountField.getText());
-                Double result = amount * er.getRate();
-                resultArea.setText(result.toString());
+    private class RateListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            double amount;
+            Currency from;
+            Currency to;
+            double rate;
+            
+            try {
+              amount = frame.getAmount();
+              from = frame.getFrom();
+              to = frame.getTo();
+              rate = exchange.load(from, to).getRate();
+              frame.setExchange(amount * rate);
+            } catch (NumberFormatException ex) {
+                frame.DisplayErrorMessage("Debes introducir un número");
             }
-        });
-        buttonClear.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                amountField.setText("");
-                resultArea.setText("");
-            }
-        });
+        }
     }
+   
 }
