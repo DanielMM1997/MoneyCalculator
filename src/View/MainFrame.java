@@ -15,7 +15,7 @@ public class MainFrame extends JFrame {
     
     public MainFrame() {
         this.setTitle("MoneyCalculator");
-        this.setSize(570,150);
+        this.setSize(620,150);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setResizable(false);
@@ -25,19 +25,21 @@ public class MainFrame extends JFrame {
     
     private void initComponents() {
         title = new JLabel("Conversor divisas");
-        title.setFont(new Font("Arial", 3, 18));
+        title.setFont(new Font("Arial", 3, 28));
         amount = new JLabel("Amount: ");
-        from = new JLabel("From: ");
-        to = new JLabel("To: ");
+        amount.setFont(new Font("Tahoma", 1, 13));
+        from = new JLabel(" From: ");
+        from.setFont(new Font("Tahoma", 1, 13));
+        to = new JLabel(" To: ");
+        to.setFont(new Font("Tahoma", 1, 13));
         res = new JLabel("Result: ");
+        res.setFont(new Font("Tahoma", 1, 13));
         tfAmount = new JTextField();
         tfAmount.setColumns(6);
         cbFrom = new JComboBox();
-        cbFrom.setMaximumRowCount(8);
         cbTo = new JComboBox();
-        cbTo.setSize(80, 20);
         tfRes = new JTextField();
-        tfRes.setColumns(6);
+        tfRes.setColumns(7);
         tfRes.setEditable(false);
         bConver = new JButton("Calculate");
     }
@@ -77,8 +79,8 @@ public class MainFrame extends JFrame {
         return (Currency) cbTo.getSelectedItem();
     }
     
-    public void setExchange(double r) {
-        tfRes.setText(Double.toString(r));
+    public void setExchange(double r, String code) {
+        tfRes.setText(String.format("%.3f", r) + " " + code);
     }
     
     public void addRateListener(ActionListener listenForRateButton) {

@@ -34,7 +34,7 @@ public class Controller {
               from = frame.getFrom();
               to = frame.getTo();
               rate = exchange.load(from, to).getRate();
-              frame.setExchange(amount * rate);
+              frame.setExchange(amount * rate, to.getSysmbol());
             } catch (NumberFormatException ex) {
                 frame.DisplayErrorMessage("Debes introducir un número");
             }

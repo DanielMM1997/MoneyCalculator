@@ -16,7 +16,7 @@ public class FileCurrencyListLoader implements CurrencyListLoader {
     }
     
     @Override
-    public CurrencyList currencies() {
+    public CurrencyList load() {
         CurrencyList list = new CurrencyList();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(new File(filename)));

@@ -14,12 +14,11 @@ public class ExchangeRateLoaderFromWeb implements ExchangeRateLoader {
     @Override
     public ExchangeRate load(Currency from, Currency to) {
         try {
-            URL url = new URL("https://free.currconv.com/api/v7/convert?q=" +
-                                from.getCode() + "_" + to.getCode() + 
-                                "&compact=ultra&apiKey=6b09f9de604b6502aa1f");
+            URL url = new URL("https://api.exchangeratesapi.io/latest?base=" +
+                                from.getCode());
             URLConnection connection = url.openConnection();
             return new ExchangeRate(from, to, 
-                    getNumberFromConnection(connection));
+                    getNumberFromConnection(connection, to));
             
         } 
         catch (MalformedURLException ex) {} 
@@ -27,14 +26,17 @@ public class ExchangeRateLoaderFromWeb implements ExchangeRateLoader {
         return new ExchangeRate(from, to, 0.0);
     }
     
-    private double getNumberFromConnection(URLConnection connection) throws IOException{
+    private double getNumberFromConnection(URLConnection connection, Currency to){
         String line;
         try (BufferedReader reader = 
                 new BufferedReader(
                         new InputStreamReader(connection.getInputStream()))) {
                 line = reader.readLine();
-                line = line.substring(line.indexOf(":")+1, 
-                    line.indexOf("}"));
+                int ini = line.indexOf(to.getCode())+5;
+                int fin = line.indexOf(",", ini);
+                line = line.substring(ini, fin);
+        } catch (Exception e){
+            return 1.0;
         }
         return Double.parseDouble(line);
     }
